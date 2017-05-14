@@ -28,17 +28,39 @@ func PushFalcon(itemCheckedArray []*g.CheckResult, hostname string) {
 	pushDatas := make([]*MetricValue, 0)
 	for _, itemChecked := range itemCheckedArray {
 		var data MetricValue
-		data.Metric = "url_status"
-		data.Endpoint = fmt.Sprintf("url_%d", itemChecked.Sid)
+		data.Metric = "url-check"
+		data.Endpoint = "url-monitor"
 		data.Timestamp = itemChecked.PushTime
 		data.Type = "GAUGE"
 		data.Step = int64(g.Config.Falcon.Interval)
-		data.Value = itemChecked.Status
+		data.Value = itemChecked.resp_code
 
 		if len(itemChecked.Tag) < 1 {
-			data.Tags = fmt.Sprintf("ip=%s,domain=%s,creator=%s,from=%s", itemChecked.Ip, itemChecked.Domain, itemChecked.Creator, hostname)
+			data.Tags = fmt.Sprintf("ip=%s,domain=%s,creator=%s,method=http_code,from=%s", itemChecked.Ip, itemChecked.Domain, itemChecked.Creator, hostname)
 		} else {
-			data.Tags = fmt.Sprintf("ip=%s,domain=%s,creator=%s,%s,from=%s", itemChecked.Ip, itemChecked.Domain, itemChecked.Creator, itemChecked.Tag, hostname)
+			data.Tags = fmt.Sprintf("ip=%s,domain=%s,creator=%s,%s,method=http_code,from=%s", itemChecked.Ip, itemChecked.Domain, itemChecked.Creator, itemChecked.Tag, hostname)
+		}
+
+		pushDatas = append(pushDatas, &data)
+
+
+		data.Value = itemChecked.resp_time
+
+		if len(itemChecked.Tag) < 1 {
+			data.Tags = fmt.Sprintf("ip=%s,domain=%s,creator=%s,method=http_time,from=%s", itemChecked.Ip, itemChecked.Domain, itemChecked.Creator, hostname)
+		} else {
+			data.Tags = fmt.Sprintf("ip=%s,domain=%s,creator=%s,%s,method=http_time,from=%s", itemChecked.Ip, itemChecked.Domain, itemChecked.Creator, itemChecked.Tag, hostname)
+		}
+
+		pushDatas = append(pushDatas, &data)
+
+
+		data.Value = itemChecked.resp_len
+
+		if len(itemChecked.Tag) < 1 {
+			data.Tags = fmt.Sprintf("ip=%s,domain=%s,creator=%s,method=http_size,from=%s", itemChecked.Ip, itemChecked.Domain, itemChecked.Creator, hostname)
+		} else {
+			data.Tags = fmt.Sprintf("ip=%s,domain=%s,creator=%s,%s,method=http_size,from=%s", itemChecked.Ip, itemChecked.Domain, itemChecked.Creator, itemChecked.Tag, hostname)
 		}
 
 		pushDatas = append(pushDatas, &data)
