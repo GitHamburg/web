@@ -33,7 +33,7 @@ func PushFalcon(itemCheckedArray []*g.CheckResult, hostname string) {
 		data.Timestamp = itemChecked.PushTime
 		data.Type = "GAUGE"
 		data.Step = int64(g.Config.Falcon.Interval)
-		data.Value = itemChecked.resp_code
+		data.Value = itemChecked.RespCode
 
 		if len(itemChecked.Tag) < 1 {
 			data.Tags = fmt.Sprintf("ip=%s,domain=%s,creator=%s,method=http_code,from=%s", itemChecked.Ip, itemChecked.Domain, itemChecked.Creator, hostname)
@@ -44,7 +44,7 @@ func PushFalcon(itemCheckedArray []*g.CheckResult, hostname string) {
 		pushDatas = append(pushDatas, &data)
 
 
-		data.Value = itemChecked.resp_time
+		data.Value = itemChecked.RespTime
 
 		if len(itemChecked.Tag) < 1 {
 			data.Tags = fmt.Sprintf("ip=%s,domain=%s,creator=%s,method=http_time,from=%s", itemChecked.Ip, itemChecked.Domain, itemChecked.Creator, hostname)
@@ -55,7 +55,7 @@ func PushFalcon(itemCheckedArray []*g.CheckResult, hostname string) {
 		pushDatas = append(pushDatas, &data)
 
 
-		data.Value = itemChecked.resp_len
+		data.Value = itemChecked.RespLen
 
 		if len(itemChecked.Tag) < 1 {
 			data.Tags = fmt.Sprintf("ip=%s,domain=%s,creator=%s,method=http_size,from=%s", itemChecked.Ip, itemChecked.Domain, itemChecked.Creator, hostname)
